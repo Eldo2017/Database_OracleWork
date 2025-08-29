@@ -35,4 +35,14 @@ grant create table to PlayMaker;
 alter session set "_oracle_script" = true;
 create user 계정명 identified by 1234;
 grant connect, resource to 계정명;
+
+
 alter user 계정명 default tablespace users quora unlimited on users;
+
+-- 계정을 삭제하고 싶다면? --
+drop user 계정명 cascade; -- 테이블이 있을 때 cascade를 붙여라 --
+
+alter session set "_oracle_script" = true;
+create user Workbook_PlayMaker identified by 1234;
+grant connect, create table to Workbook_PlayMaker;
+alter user Workbook_PlayMaker quota unlimited on users;
