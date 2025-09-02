@@ -42,7 +42,14 @@ alter user 계정명 default tablespace users quora unlimited on users;
 -- 계정을 삭제하고 싶다면? --
 drop user 계정명 cascade; -- 테이블이 있을 때 cascade를 붙여라 --
 
+-- workbook 사용자 생성하기 --
 alter session set "_oracle_script" = true;
 create user Workbook_PlayMaker identified by 1234;
 grant connect, create table to Workbook_PlayMaker;
 alter user Workbook_PlayMaker quota unlimited on users;
+
+-- scott 사용자 생성하기 --
+alter session set "_oracle_script" = true;
+create user Scott_PlayMaker identified by 1234;
+grant connect, create table to Scott_PlayMaker;
+alter user Scott_PlayMaker quota unlimited on users;

@@ -658,3 +658,21 @@ select count(dept_code) 사원수 from employee;
 
 -- employee 테이블에서 현재 사원이 총 몇개 부서에 분포돼있는지 조회하라
 select count(distinct dept_code) 부서수 from employee;
+
+-- 1. EMPLOYEE테이블에서 부서코드가 D5, D6, D9인 사원만 조회하되 D5면 총무부
+--   , D6면 기획부, D9면 영업부로 처리(EMP_ID, EMP_NAME, DEPT_CODE, 총무부)
+--    (단, 부서코드 오름차순으로 정렬)
+select emp_id, emp_name, dept_code, decode(dept_code,'D5','총무부','D6','기획부','D9','영업부') 소속부서 
+from employee order by 소속부서 asc;
+
+-- 2. EMPLOYEE테이블에서 부서코드가 D5인 직원의 보너스 포함 연봉 합 조회
+select sum((salary+salary*nvl(bonus,0))*12) 연봉합계 from employee where dept_code='D5';
+
+-- 3. EMPLOYEE테이블에서 직원들의 입사일로부터 년도만 가지고 각 년도별 입사 인원수 조회
+--      전체 직원 수, 2001년, 2002년, 2003년, 2004년
+select count(*) as "전체 직원 수",
+sum(case when to_char(hire_date, 'yyyy') = '2001' then 1 else 0 end) as "2001년",
+sum(case when to_char(hire_date, 'yyyy') = '2002' then 1 else 0 end) as "2002년",
+sum(case when to_char(hire_date, 'yyyy') = '2003' then 1 else 0 end) as "2003년",
+sum(case when to_char(hire_date, 'yyyy') = '2004' then 1 else 0 end) as "2004년"
+from employee;
