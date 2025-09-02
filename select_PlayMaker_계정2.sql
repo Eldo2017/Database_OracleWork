@@ -520,3 +520,141 @@ from employee;
 select emp_name, substr(emp_no,1,6) 앞자리,substr(emp_no,8,7) 뒷자리,
 to_number(substr(emp_no,1,6)) + to_number(substr(emp_no,8,7)) 합계
 from employee where emp_id = 201;
+--------------------------------------------------------------------------------
+
+/*
+    decode(비교하려는 대상(컬럼이나 산술연산, 함수식 중 하나), 비교값1, 결과값1, 비교값2, 결과값2, ...)
+
+    - switch case문과 유사
+        switch(비교대상)
+            case 비교값1:
+                결과값1;
+            case 비교값2:
+                결과값2;
+            ...
+            default:
+                결과값N;
+*/
+
+-- employee 테이블에서 사번, 사원명, 주민번호, 성별을 조회하라
+select emp_id, emp_name, emp_no, 
+decode(substr(emp_no,8,1),'1','남자','2','여자','3','남자','4','여자') 성별 
+from employee;
+
+-- employee 테이블에서 사번, 사원명, 직급, 직급별로 인상한 급여를 조회하라
+-- J7인 사원은 급여 10%
+-- J6인 사원은 급여 15%
+-- J5인 사원은 급여 20%
+-- 그외의 사원은 급여 5% 인상한다
+select emp_id, emp_name, job_code,
+decode(job_code,'J5',salary + salary*0.2,'J6', salary + salary*0.15, 'J7', salary + salary*0.1, salary+salary*0.05) 직급별_급여
+from employee;
+
+--------------------------------------------------------------------------------
+--                          <선택 함수>
+--------------------------------------------------------------------------------
+
+/*
+    case when then
+    end
+    
+    case when 조건식1 then 결과값1
+         when 조건식2 then 결과값2
+         ...
+         else 결과값N
+    end
+    
+    프로그램의 if else문과 동일하다
+    
+    if(조건식)
+        결과값1
+    else if(조건식2)
+        결과값2
+    ...
+    else
+        결과값N
+*/
+
+-- employee 테이블에서 사원명, 급여, 급여에 따라 등급을 조회하라
+-- 고급 : 500만원이상
+-- 중급 : 300만원 이상이면서 500만원 미만
+-- 초급 : 300만원 미만
+
+select emp_name, salary, 
+case when salary >= 5000000 then '고급'
+     when salary >= 3000000 then '중급'
+     else '초급'
+end 등급
+from employee;
+
+--------------------------------------------------------------------------------
+--                             <그룹 함수>
+--------------------------------------------------------------------------------
+/*
+    sum(컬럼(숫자 타입)) : 해당 컬럼들의 합산을 반환한다
+*/
+
+-- employee 테이블의 급여의 총합
+select sum(salary) 합계 from employee;
+
+-- employee 테이블의 성별이 남자인 사원들의 급여 총합
+select sum(salary) "합계(남자사원)" from employee where substr(emp_no,8,1) in ('1','3');
+select sum(salary) "합계(남자사원)" from employee where decode(substr(emp_no,8,1),'1','남','3','남')='남';
+
+-- employee 테이블 부서코드가 'D5'인 사원의 총 급여
+select sum(salary) "합계(D5 사원)" from employee where dept_code = 'D5';
+
+-- employee 테이블 부서코드가 'D5'인 사원의 총 연봉
+select sum(salary*12) 연봉합계 from employee where dept_code = 'D5';
+
+-- employee 테이블 모든 사원의 총 급여를 구하라 (형식: \999,999,000)
+select to_char(sum(salary),'L999,999,999') 급여합계 from employee;
+
+-- employee 테이블 부서코드가 'D5'인 사원의 총 연봉(보너스 포함)
+select sum((salary+salary*nvl(bonus,0))*12) 연봉합계 from employee where dept_code = 'D5';
+
+--------------------------------------------------------------------------------
+
+/*
+    avg(컬럼(숫자 타입)) : 해당 컬럼값들의 평균을 반환한다  
+*/
+
+-- employee 테이블에서 전 사원의 급여 평균
+select avg(salary) from employee;
+select round(avg(salary),0) from employee;
+
+--------------------------------------------------------------------------------
+
+/*
+    min(컬럼(모든 타입)) : 해당 컬럼값들의 최소값을 반환한다
+    max(컬럼(모든 타입)) : 해당 컬럼값들의 최대값을 반환한다
+*/
+
+select min(emp_name), min(salary), min(hire_date) from employee;
+select max(emp_name), max(salary), max(hire_date) from employee;
+
+--------------------------------------------------------------------------------
+
+/*
+    count(*|컬럼|distinct) : 행의 개수를 반환한다
+    
+    - count(*): 조회된 결과의 모든 행의 개수
+    - count(컬럼): 제시한 컬럼의 null값을 뺀 행의 개수
+    - count(distinct 컬럼): 해당 컬럼값에서 중복값을 뺀 행의 개수
+*/
+
+-- employee 테이블에서 전체 사원수
+select count(*) 사원수 from employee;
+
+-- employee 테이블에서 여성 사원수
+select count(*) 사원수 from employee where decode(substr(emp_no,8,1),'2','여','4','여')='여';
+
+-- employee 테이블에서 보너스를 주는 사원수
+select count(*) 사원수 from employee where bonus is not null;
+select count(bonus) 사원수 from employee;
+
+-- employee 테이블에서 부서배치를 받은 사원수
+select count(dept_code) 사원수 from employee;
+
+-- employee 테이블에서 현재 사원이 총 몇개 부서에 분포돼있는지 조회하라
+select count(distinct dept_code) 부서수 from employee;
