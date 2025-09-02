@@ -137,7 +137,7 @@ group by cube(dept_code, job_code) order by dept_code;
     - union all : 합집합 + 교집합(중복되는 값은 두 번 보여진다)
     - minus : 차집합(선행결과값에서 후행결과값을 뺀 나머지값)
 */
-
+-- union
 -- 부서코드가 D5인 사원이나 급여가 300만원을 넘는 사원들을 찾아라
 
 -- 1) 부서코드가 D5인 사원
@@ -149,3 +149,31 @@ select emp_name, dept_code, salary from employee where dept_code = 'D5' union
 select emp_name, dept_code, salary from employee where salary >= 3000000 order by salary asc;
 -- 4) or 사용
 select emp_name, dept_code, salary from employee where dept_code = 'D5' or salary >= 3000000;
+
+-- intersect
+-- 부서코드가 'D5'이면서 급여가 300만원을 넘는 사원들을 찾아라
+
+-- 1) 부서코드가 D5인 사원
+select emp_name, dept_code, salary from employee where dept_code = 'D5'; -- 6명
+-- 2) 급여가 300만원을 넘는 사원
+select emp_name, dept_code, salary from employee where salary >= 3000000; -- 8명
+-- 3) intersect 사용
+select emp_name, dept_code, salary from employee where dept_code = 'D5' intersect
+select emp_name, dept_code, salary from employee where salary >= 3000000 order by salary asc;
+-- 4) and 사용
+select emp_name, dept_code, salary from employee where dept_code = 'D5' and salary >= 3000000;
+
+-- union all
+-- 부서코드가 'D5'이면서 급여가 300만원을 넘는 사원들을 찾아라 (중복된 행은 2번 출력이 되는 것 명심)
+select emp_name, dept_code, salary from employee where dept_code = 'D5' union all
+select emp_name, dept_code, salary from employee where salary >= 3000000 order by salary asc;
+
+-- minus
+-- 부서코드가 'D5'인데 급여를 300만원 이하로 받는 사원들을 찾아라
+select emp_name, dept_code, salary from employee where dept_code = 'D5' minus
+select emp_name, dept_code, salary from employee where salary >= 3000000 order by salary asc;
+
+-- and로도 가능하다
+select emp_name, dept_code, salary from employee
+where dept_code = 'D5' and salary <= 3000000; -- 300만원보다 작거나 같게 바꿔라
+
