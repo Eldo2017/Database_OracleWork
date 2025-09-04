@@ -172,7 +172,7 @@ join job using(job_code) where job_name = '차장');
 
 --------------------------------------------------------------------------------
 /*
-    2. 다중열 서브쿼리(multi column subquery)
+    3. 다중열 서브쿼리(multi column subquery)
     - 서브쿼리를 수행한 결과값이 여러 열일 때(1행 여러열)
 */
 -- 1. 홍만길 사원과 같은 부서코드, 같은 직급코드에 해당하는 사원들의 사원명, 부서코드, 직급코드, 입사일자를 구하라
@@ -187,3 +187,33 @@ where (dept_code, job_code) = (select dept_code, job_code from employee where em
 -- 2. 김관철 사원과 같은 직급코드, 같은 사수를 가지고 있는 사원들의 사번, 사원명, 직급코드, 사수사번 조회
 select emp_id, emp_name, job_code, manager_id from employee
 where (job_code, manager_id) = (select job_code, manager_id from employee where emp_name = '김관철');
+
+--------------------------------------------------------------------------------
+/*
+    4. 다중행 다중열 서브쿼리
+    - 서브쿼리를 수행한 결과값이 여러행 여러열일때(여러행 여러열)
+*/
+
+-- 1. 각 직급별 최소급여 금액을 받는 사원의 사번, 사원명, 직급코드, 급여 조회
+------- 1) 각 직급별 최소급여 금액, 직급코드 조회
+select job_code, min(salary) from employee group by job_code;
+------- 2) 위 조건에 해당하는 사원의 사번, 사원명, 직급코드, 급여 조회
+select emp_id, emp_name, job_code, salary from employee group by job_code = 'J1' and salary = 8000000
+                                                              or job_code = 'J2' and salary = 3700000
+                                                              ... ;
+select emp_id, emp_name, job_code, salary from employee
+where (job_code, salary) = ('J1',8000000)
+or (job_code, salary) = ('J2',3700000)
+...;
+
+------- 3) 서브쿼리로!
+select emp_id, emp_name, job_code, salary from employee
+where (job_code, salary) in (select job_code, min(salary) from employee group by job_code);
+
+-- 2. 각 부서별 최고급여를 받는 사원들의 사번, 사원명, 부서코드, 급여 조회
+------- 1) 각 부서별 최고급여 (부서코드, 급여 이용)
+select dept_code, max(salary) from employee group by dept_code;
+
+------- 2) 위 부서들에 속한 사원들의 사번, 사원명, 부서코드, 급여 조회
+select emp_id, emp_name, dept_code, salary from employee
+where (dept_code, salary) in (select dept_code, max(salary) from employee group by dept_code);

@@ -53,3 +53,9 @@ alter session set "_oracle_script" = true;
 create user Scott_PlayMaker identified by 1234;
 grant connect, create table to Scott_PlayMaker;
 alter user Scott_PlayMaker quota unlimited on users;
+
+-- DDL용 사용자 생성하기 --
+alter session set "_oracle_script" = true;
+create user DDL_PlayMaker identified by 1234;
+grant connect, create table to DDL_PlayMaker;
+alter user DDL_PlayMaker quota unlimited on users;

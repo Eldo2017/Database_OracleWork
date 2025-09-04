@@ -60,10 +60,22 @@ from employee
 join department on dept_code = dept_id 
 group by dept_title
 having sum(salary) > (select sum(salary)*0.2 from employee);
---	안함 12-2. 인라인 뷰 사용      
---	안함 12-3. WITH 사용
+--	12-2. 인라인 뷰 사용
+select * from (select dept_title, sum(salary) "부서별 급여합" from employee
+join department on dept_code = dept_id
+group by dept_title
+having sum(salary) > (select sum(salary)*0.2 from employee));
+
+--	12-3. WITH 사용
+with result_of_salary_sum as (select dept_title, sum(salary) "부서별 급여합" from employee
+join department on dept_code = dept_id
+group by dept_title
+having sum(salary) > (select sum(salary)*0.2 from employee))
+select * from result_of_salary_sum;
 -- 13. 부서명별 급여 합계 조회(NULL도 조회되도록)
 select nvl(dept_title,'부서없음') as 부서명, sum(salary) as 급여합 from employee
 left join department on dept_code = dept_id
 group by dept_title;
--- 안함 14. WITH를 이용하여 급여합과 급여평균 조회
+-- 14. WITH를 이용하여 급여합과 급여평균 조회
+with sum_and_avg as (select dept_code, sum(salary), round(avg(salary)) from employee group by dept_code)
+select * from sum_and_avg;
