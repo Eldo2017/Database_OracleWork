@@ -30,3 +30,6 @@ alter table tb_class_type
 rename column no to category_no;
 
 -- 7. 
+alter table tb_category
+rename constraint pk_category_name to primary key(category_name);
+

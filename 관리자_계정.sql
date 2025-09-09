@@ -84,3 +84,5 @@ select * from role_sys_privs;
 
 select * from role_sys_privs
 where role ='resource';
+
+grant create view to PlayMaker;
