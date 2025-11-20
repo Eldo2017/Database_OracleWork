@@ -59,3 +59,27 @@ alter session set "_oracle_script" = true;
 create user DDL_PlayMaker identified by 1234;
 grant connect, create table to DDL_PlayMaker;
 alter user DDL_PlayMaker quota unlimited on users;
+
+-- jsp 사용자 생성하기
+alter session set "_oracle_script" = true;
+create user JSP_PlayMaker identified by 1234;
+grant connect, create table to JSP_PlayMaker;
+alter user JSP_Playmaker quota unlimited on users;
+
+GRANT CREATE SEQUENCE TO JSP_PlayMaker;
+
+-- myBatis 계정 생성하기
+alter session set "_oracle_script" = true;
+create user myBatis_PlayMaker identified by 1234;
+grant connect, create table to myBatis_PlayMaker;
+alter user myBatis_PlayMaker quota unlimited on users;
+
+GRANT CREATE SEQUENCE TO myBatis_PlayMaker;
+
+-- Spring boot 계정 생성하기
+alter session set "_oracle_script" = true;
+create user springboot_Playmaker identified by 1234;
+grant connect, create table to springboot_Playmaker;
+alter user springboot_Playmaker quota unlimited on users;
+
+GRANT CREATE SEQUENCE TO springboot_Playmaker;
